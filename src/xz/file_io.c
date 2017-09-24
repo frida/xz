@@ -525,7 +525,10 @@ io_open_src_real(file_pair *pair)
 #endif
 #ifdef HAVE_POSIX_FADVISE
 		// It will fail if stdin is a pipe and that's fine.
-		(void)posix_fadvise(STDIN_FILENO, 0, 0, POSIX_FADV_SEQUENTIAL);
+		(void)posix_fadvise(STDIN_FILENO, 0, 0,
+				opt_mode == MODE_LIST
+					? POSIX_FADV_RANDOM
+					: POSIX_FADV_SEQUENTIAL);
 #endif
 		return false;
 	}
@@ -716,7 +719,10 @@ io_open_src_real(file_pair *pair)
 
 #ifdef HAVE_POSIX_FADVISE
 	// It will fail with some special files like FIFOs but that is fine.
-	(void)posix_fadvise(pair->src_fd, 0, 0, POSIX_FADV_SEQUENTIAL);
+	(void)posix_fadvise(pair->src_fd, 0, 0,
+			opt_mode == MODE_LIST
+				? POSIX_FADV_RANDOM
+				: POSIX_FADV_SEQUENTIAL);
 #endif
 
 	return false;
@@ -1163,15 +1169,29 @@ io_read(file_pair *pair, io_buf *buf_union, size_t size)
 
 
 extern bool
-io_pread(file_pair *pair, io_buf *buf, size_t size, off_t pos)
+io_seek_src(file_pair *pair, off_t pos)
 {
-	// Using lseek() and read() is more portable than pread() and
-	// for us it is as good as real pread().
+	assert(pos >= 0);
+
 	if (lseek(pair->src_fd, pos, SEEK_SET) != pos) {
 		message_error(_("%s: Error seeking the file: %s"),
 				pair->src_name, strerror(errno));
 		return true;
 	}
+
+	pair->src_eof = false;
+
+	return false;
+}
+
+
+extern bool
+io_pread(file_pair *pair, io_buf *buf, size_t size, off_t pos)
+{
+	// Using lseek() and read() is more portable than pread() and
+	// for us it is as good as real pread().
+	if (io_seek_src(pair, pos))
+		return true;
 
 	const size_t amount = io_read(pair, buf, size);
 	if (amount == SIZE_MAX)
