@@ -29,7 +29,6 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{E0F247DB-EF12-4755-8DF9-F74BCD1348F7}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -256,7 +255,6 @@
     <ClCompile Include="..\..\src\liblzma\common\easy_encoder.c" />
     <ClCompile Include="..\..\src\liblzma\common\easy_encoder_memusage.c" />
     <ClCompile Include="..\..\src\liblzma\common\easy_preset.c" />
-    <ClCompile Include="..\..\src\liblzma\common\file_info.c" />
     <ClCompile Include="..\..\src\liblzma\common\filter_buffer_decoder.c" />
     <ClCompile Include="..\..\src\liblzma\common\filter_buffer_encoder.c" />
     <ClCompile Include="..\..\src\liblzma\common\filter_common.c" />
@@ -346,7 +344,6 @@
     <ClInclude Include="..\..\src\liblzma\common\filter_decoder.h" />
     <ClInclude Include="..\..\src\liblzma\common\filter_encoder.h" />
     <ClInclude Include="..\..\src\liblzma\common\index.h" />
-    <ClInclude Include="..\..\src\liblzma\common\index_decoder.h" />
     <ClInclude Include="..\..\src\liblzma\common\index_encoder.h" />
     <ClInclude Include="..\..\src\liblzma\common\memcmplen.h" />
     <ClInclude Include="..\..\src\liblzma\common\outqueue.h" />
