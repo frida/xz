@@ -127,9 +127,18 @@ liblzma = library('lzma', lzma_sources,
   lz_sources, delta_sources,
   include_directories : [confinc, lzmainc],
   c_args : ['-DHAVE_CONFIG_H', '-DTUKLIB_SYMBOL_PREFIX=lzma_'],
+  install : true,
 )
 
 lzma_dep = declare_dependency(link_with : liblzma,
   include_directories : include_directories('api'))
 
+pkg = import('pkgconfig')
+pkg.generate(liblzma,
+  name : 'liblzma',
+  description : 'General purpose data compression library',
+)
+
 meson.override_dependency('liblzma', lzma_dep)
+
+subdir('api')
