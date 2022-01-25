@@ -1,12 +1,8 @@
 sources = [
   'args.c',
-  'args.h',
   'coder.c',
   'file_io.c',
-  'file_io.h',
   'hardware.c',
-  'list.c',
-  'list.h',
   'main.c',
   'message.c',
   'mytime.c',
@@ -14,18 +10,18 @@ sources = [
   'signals.c',
   'suffix.c',
   'util.c',
-  '../common/tuklib_open_stdxxx.c',
-  '../common/tuklib_progname.c',
-  '../common/tuklib_exit.c',
-  '../common/tuklib_mbstr_width.c',
-  '../common/tuklib_mbstr_fw.c',
 ]
 
-xzinc = include_directories('../common',
-  '../liblzma/api', '../../lib')
+if desired_decoders.length() > 0
+  sources += 'list.c'
+endif
 
 xz = executable('xz', sources,
-  c_args : ['-DHAVE_CONFIG_H'],
-  include_directories : [confinc, xzinc],
-  link_with : liblzma,
+  tuklib_open_stdxxx,
+  tuklib_progname,
+  tuklib_exit,
+  tuklib_mbstr,
+  include_directories : [confinc, tukinc],
+  dependencies : [core_deps, xz_deps, lzma_dep],
+  install : true
 )
