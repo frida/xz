@@ -54,14 +54,23 @@ liblzma = library('lzma',
   install : true,
 )
 
-lzma_dep = declare_dependency(link_with : liblzma,
-  include_directories : include_directories('api'))
+lzma_cflags = []
+if get_option('default_library') == 'static'
+  lzma_cflags += '-DLZMA_API_STATIC'
+endif
+
+lzma_dep = declare_dependency(
+  compile_args : lzma_cflags,
+  link_with : liblzma,
+  include_directories : include_directories('api')
+)
 
 pkg = import('pkgconfig')
 pkg.generate(liblzma,
   name : 'liblzma',
   description : 'General purpose data compression library',
   url : project_url,
+  extra_cflags : lzma_cflags,
 )
 
 meson.override_dependency('liblzma', lzma_dep)
