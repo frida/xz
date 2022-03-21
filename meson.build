@@ -2,6 +2,7 @@ project('xz', 'c',
   version : '5.2.5',
   license : 'pd/lgpl2/gpl2/gpl3',
   default_options : [
+    'c_std=c99',
     'optimization=2',
     'b_ndebug=true',
     'warning_level=2',
