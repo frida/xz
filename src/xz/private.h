@@ -21,9 +21,7 @@
 #include <signal.h>
 #include <locale.h>
 #include <stdio.h>
-#ifdef HAVE_UNISTD_H
-#	include <unistd.h>
-#endif
+#include <unistd.h>
 
 #include "tuklib_gettext.h"
 #include "tuklib_progname.h"

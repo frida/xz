@@ -210,6 +210,10 @@ AC_ARG_ENABLE([match-finders], AS_HELP_STRING([--enable-match-finders=LIST],
 	[enable_match_finders=SUPPORTED_MATCH_FINDERS])
 enable_match_finders=`echo "$enable_match_finders" | sed 's/,/ /g'`
 if test "x$enable_encoder_lz" = xyes ; then
+	if test -z "$enable_match_finders"; then
+		AC_MSG_ERROR([At least one match finder is required for an LZ-based encoder.])
+	fi
+
 	for arg in $enable_match_finders
 		do
 		case $arg in m4_foreach([NAME], [SUPPORTED_MATCH_FINDERS], [
@@ -489,7 +493,28 @@ if test "x$enable_symbol_versions" = xauto; then
 	esac
 fi
 AC_MSG_RESULT([$enable_symbol_versions])
-AM_CONDITIONAL([COND_SYMVERS], [test "x$enable_symbol_versions" = xyes])
+
+# There are two variants for symbol versioning.
+# See src/liblzma/validate_map.sh for details.
+if test "x$enable_symbol_versions" = xyes; then
+	case $host_os in
+		linux*)
+			enable_symbol_versions=linux
+			AC_DEFINE([HAVE_SYMBOL_VERSIONS_LINUX], [1],
+				[Define to 1 to if GNU/Linux-specific details
+				are wanted for symbol versioning. This must
+				be used together with liblzma_linux.map.])
+			;;
+		*)
+			enable_symbol_versions=generic
+			;;
+	esac
+fi
+
+AM_CONDITIONAL([COND_SYMVERS_LINUX],
+	[test "x$enable_symbol_versions" = xlinux])
+AM_CONDITIONAL([COND_SYMVERS_GENERIC],
+	[test "x$enable_symbol_versions" = xgeneric])
 
 
 ##############
